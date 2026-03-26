@@ -4,25 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Worry Map · You're Not Alone</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&family=Caveat:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #f3ead9;
-    --text:        #1c1008;
-    --muted:       #8a6e4e;
-    --accent:      #7a3d22;
-    --accent-warm: #c4703a;
-    --border:      #d4be9e;
+    --bg:          #f5ede0;
+    --text:        #1e130b;
+    --muted:       #8a6b50;
+    --accent:      #b54e3a;
+    --accent-warm: #cc7048;
+    --border:      #d4bba0;
   }
   html.dark {
     --bg:          #110c07;
     --text:        #e6d2b4;
     --muted:       #7a5e3e;
-    --accent:      #bf6e38;
+    --accent:      #c46a40;
     --accent-warm: #e08c50;
     --border:      #2c1e0f;
   }
@@ -30,7 +30,7 @@
   html, body { height: 100%; width: 100%; overflow: hidden; }
 
   body {
-    font-family: 'Crimson Pro', serif;
+    font-family: 'Source Serif 4', serif;
     background: var(--bg);
     color: var(--text);
     position: relative;
@@ -44,7 +44,7 @@
 
   /* Leaflet overrides */
   .leaflet-control-attribution {
-    font-family: 'Crimson Pro', serif !important;
+    font-family: 'Source Serif 4', serif !important;
     font-size: 0.65rem !important;
     font-style: italic !important;
     background: transparent !important;
@@ -55,7 +55,7 @@
   .leaflet-control-attribution a { color: var(--muted) !important; }
 
   .leaflet-control-zoom a {
-    font-family: 'Crimson Pro', serif !important;
+    font-family: 'Source Serif 4', serif !important;
     font-weight: 300 !important;
     color: var(--muted) !important;
     background: var(--bg) !important;
@@ -81,6 +81,7 @@
     pointer-events: none;
     background: var(--bg);
     border: 1px solid var(--border);
+    border-radius: 4px;
     padding: 1.1rem 2.2rem 1.2rem;
     min-width: 220px;
     max-width: 88vw;
@@ -88,10 +89,10 @@
   }
 
   .eyebrow {
-    font-size: 0.68rem;
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: 0.08em;
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
     color: var(--muted);
     margin-bottom: 0.3rem;
     opacity: 0.75;
@@ -99,7 +100,8 @@
   }
 
   h1 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
     font-size: clamp(1.3rem, 4vw, 1.9rem);
     font-weight: 400;
     color: var(--text);
@@ -109,9 +111,9 @@
   }
 
   .subtitle {
-    font-size: 0.82rem;
-    font-weight: 300;
-    font-style: italic;
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    font-weight: 400;
     color: var(--muted);
     opacity: 0.75;
     transition: color 0.9s;
@@ -123,13 +125,12 @@
     bottom: 1.8rem;
     left: 1.8rem;
     z-index: 10;
-    font-family: 'Crimson Pro', serif;
-    font-size: 0.8rem;
-    font-weight: 300;
-    font-style: italic;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    font-weight: 400;
     color: var(--muted);
     text-decoration: none;
-    opacity: 0.7;
+    opacity: 0.65;
     transition: color 0.3s, opacity 0.3s;
   }
   .home-link:hover { color: var(--accent); opacity: 1; }
@@ -143,7 +144,7 @@
   .hb-dot {
     width: 8px;
     height: 8px;
-    background: var(--accent, #7a3d22);
+    background: var(--accent, #b54e3a);
     border-radius: 50%;
     position: absolute;
     top: 1px;
@@ -154,7 +155,7 @@
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    border: 1px solid var(--accent, #7a3d22);
+    border: 1px solid var(--accent, #b54e3a);
     animation: hb-pulse 2.8s ease-out infinite;
     opacity: 0;
   }
@@ -222,7 +223,7 @@
         if (typeof h.lat !== 'number' || typeof h.lng !== 'number') return;
 
         const delay = ((i * 0.38) % 2.8).toFixed(2);
-        const accentColor = isDark ? '#e08c50' : '#7a3d22';
+        const accentColor = isDark ? '#e08c50' : '#b54e3a';
         const icon = L.divIcon({
           className: '',
           html: `<div class="hb-wrap">

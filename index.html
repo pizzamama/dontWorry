@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You're Not Alone</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&family=Caveat:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #f3ead9;
-    --text:        #1c1008;
-    --muted:       #8a6e4e;
-    --accent:      #7a3d22;
-    --accent-warm: #c4703a;
-    --border:      #d4be9e;
-    --ruled:       #e6d8c0;
-    --input-bg:    #f9f3e7;
+    --bg:          #f5ede0;
+    --text:        #1e130b;
+    --muted:       #8a6b50;
+    --accent:      #b54e3a;
+    --accent-warm: #cc7048;
+    --border:      #d4bba0;
+    --ruled:       #e7d5be;
+    --input-bg:    #fdf6ec;
     --transition:  background 0.9s ease, color 0.9s ease, border-color 0.9s ease;
   }
 
@@ -24,7 +24,7 @@
     --bg:          #110c07;
     --text:        #e6d2b4;
     --muted:       #7a5e3e;
-    --accent:      #bf6e38;
+    --accent:      #c46a40;
     --accent-warm: #e08c50;
     --border:      #2c1e0f;
     --ruled:       #1e140a;
@@ -32,7 +32,7 @@
   }
 
   body {
-    font-family: 'Crimson Pro', serif;
+    font-family: 'Source Serif 4', serif;
     font-weight: 300;
     background: var(--bg);
     color: var(--text);
@@ -46,13 +46,13 @@
     transition: var(--transition);
   }
 
-  /* Warm ambient light — replaces blobs */
+  /* Warm ambient light */
   body::after {
     content: '';
     position: fixed;
     inset: 0;
-    background: radial-gradient(ellipse 100% 50% at 50% 0%,
-      rgba(220, 160, 80, 0.07) 0%, transparent 65%);
+    background: radial-gradient(ellipse 110% 55% at 50% 0%,
+      rgba(210, 140, 70, 0.09) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
     transition: opacity 0.9s ease;
@@ -78,18 +78,17 @@
     opacity: 0.35;
   }
 
-  /* ── Nav chrome ── */
+  /* Nav chrome */
   .mode-badge {
     position: fixed;
     top: 1.5rem;
     right: 1.8rem;
-    font-family: 'Crimson Pro', serif;
-    font-size: 0.78rem;
-    font-weight: 300;
-    font-style: italic;
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    font-weight: 400;
     color: var(--muted);
     z-index: 10;
-    opacity: 0.6;
+    opacity: 0.55;
     transition: color 0.9s ease;
   }
 
@@ -97,19 +96,18 @@
     position: fixed;
     top: 1.5rem;
     left: 1.8rem;
-    font-family: 'Crimson Pro', serif;
-    font-size: 0.78rem;
-    font-weight: 300;
-    font-style: italic;
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    font-weight: 400;
     color: var(--muted);
     text-decoration: none;
     z-index: 10;
-    opacity: 0.6;
+    opacity: 0.55;
     transition: color 0.3s, opacity 0.3s;
   }
   .map-link:hover { color: var(--accent); opacity: 1; }
 
-  /* ── Container ── */
+  /* Container */
   .container {
     position: relative;
     z-index: 1;
@@ -117,10 +115,9 @@
     max-width: 480px;
   }
 
-  /* ── Screen transitions ── */
-  /* JS hardcodes 'fadeUp' — redefine it as a soft blur-fade */
-  #screen-input  { animation: fadeUp 1s ease both; }
-  #screen-result { display: none; animation: fadeUp 1s ease both; }
+  /* Screen transitions */
+  #screen-input   { animation: fadeUp 1s ease both; }
+  #screen-result  { display: none; animation: fadeUp 1s ease both; }
   #screen-loading { display: none; animation: fadeUp 0.5s ease both; }
 
   @keyframes fadeUp {
@@ -128,20 +125,20 @@
     to   { opacity: 1; filter: blur(0);   transform: translateY(0); }
   }
 
-  /* ── Input screen ── */
+  /* Input screen */
   .eyebrow {
-    font-size: 0.74rem;
-    font-weight: 300;
-    font-style: italic;
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    font-weight: 400;
     color: var(--muted);
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.04em;
+    margin-bottom: 0.7rem;
     opacity: 0.8;
     transition: color 0.9s ease;
   }
 
   h1 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
     font-size: clamp(2.4rem, 6vw, 3.4rem);
     font-weight: 400;
     line-height: 1.15;
@@ -152,6 +149,7 @@
   }
 
   .subtitle {
+    font-family: 'Source Serif 4', serif;
     font-size: 1.05rem;
     font-weight: 300;
     color: var(--muted);
@@ -161,7 +159,8 @@
   }
 
   .privacy-notice {
-    font-size: 0.8rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.82rem;
     font-weight: 300;
     font-style: italic;
     color: var(--muted);
@@ -169,7 +168,7 @@
     margin-bottom: 2rem;
     line-height: 1.7;
     padding-left: 1rem;
-    border-left: 1.5px solid var(--border);
+    border-left: 1.5px dashed var(--border);
     transition: var(--transition);
   }
 
@@ -188,10 +187,10 @@
     border: none;
     border-bottom: 1.5px solid var(--border);
     padding: 0.15em 0.3em 0.5em;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.15rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
     font-style: italic;
-    font-weight: 300;
+    font-weight: 400;
     color: var(--text);
     resize: none;
     outline: none;
@@ -208,15 +207,14 @@
   }
 
   .char-count {
+    font-family: 'Caveat', cursive;
     text-align: right;
-    font-size: 0.73rem;
-    font-style: italic;
+    font-size: 0.95rem;
     color: var(--muted);
     margin-top: 0.5rem;
     margin-bottom: 2rem;
-    opacity: 0.45;
-    font-weight: 300;
-    font-variant-numeric: oldstyle-nums;
+    opacity: 0.4;
+    font-weight: 400;
     transition: color 0.9s ease;
   }
 
@@ -224,12 +222,12 @@
     background: var(--text);
     color: var(--bg);
     border: none;
-    border-radius: 2px;
+    border-radius: 24px;
     padding: 0.82rem 2.8rem;
-    font-family: 'Crimson Pro', serif;
+    font-family: 'Source Serif 4', serif;
     font-size: 0.95rem;
     font-weight: 400;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.09em;
     cursor: pointer;
     transition: background 0.4s ease, transform 0.12s ease;
   }
@@ -245,7 +243,7 @@
     background: none;
     border: none;
     color: var(--muted);
-    font-family: 'Crimson Pro', serif;
+    font-family: 'Source Serif 4', serif;
     font-size: 0.95rem;
     font-weight: 300;
     font-style: italic;
@@ -262,46 +260,43 @@
     text-decoration-color: var(--accent);
   }
 
-  /* ── Loading ── */
+  /* Loading */
   .loading-wrap {
     padding: 4.5rem 0;
     text-align: center;
   }
   .loading-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: 1.5rem;
+    font-family: 'Caveat', cursive;
+    font-weight: 400;
+    font-size: 1.9rem;
     color: var(--muted);
     animation: breathe 2.8s ease-in-out infinite;
-    letter-spacing: 0.02em;
   }
   @keyframes breathe {
     0%, 100% { opacity: 0.2; }
-    50%       { opacity: 0.8; }
+    50%       { opacity: 0.85; }
   }
 
-  /* ── Result ── */
+  /* Result */
   .result-card {
     margin-bottom: 0.4rem;
   }
 
   .result-label {
-    font-family: 'Crimson Pro', serif;
-    font-size: 0.72rem;
-    font-weight: 300;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    font-weight: 400;
     color: var(--muted);
     margin-bottom: 1.4rem;
-    opacity: 0.65;
+    opacity: 0.7;
     transition: color 0.9s ease;
   }
 
   .result-message {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
     font-size: clamp(1.3rem, 3.8vw, 1.75rem);
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--text);
     font-weight: 400;
     padding-left: 1.3rem;
@@ -310,7 +305,7 @@
     transition: color 0.9s ease, border-color 0.9s ease;
   }
   .result-message em {
-    font-style: italic;
+    font-style: normal;
     color: var(--accent-warm);
     transition: color 0.9s ease;
   }
@@ -318,6 +313,7 @@
   .divider { display: none; }
 
   .result-note {
+    font-family: 'Source Serif 4', serif;
     font-size: 0.85rem;
     font-weight: 300;
     font-style: italic;
@@ -328,13 +324,12 @@
     transition: color 0.9s ease;
   }
 
-  /* ── Footer ── */
+  /* Footer */
   footer {
     margin-top: 3.5rem;
-    font-size: 0.7rem;
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: 0.06em;
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    font-weight: 400;
     color: var(--muted);
     opacity: 0.35;
     transition: color 0.9s ease;
