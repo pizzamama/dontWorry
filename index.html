@@ -291,11 +291,42 @@
     color: var(--border);
     transition: color 0.6s ease;
   }
+
+  .map-link {
+    position: fixed;
+    top: 1.2rem;
+    left: 1.4rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 300;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    z-index: 10;
+    opacity: 0.7;
+    transition: color 0.3s, opacity 0.3s;
+  }
+  .map-link:hover { color: var(--accent); opacity: 1; }
+
+  .privacy-notice {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--muted);
+    opacity: 0.75;
+    margin-bottom: 1.4rem;
+    line-height: 1.6;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: var(--transition);
+  }
 </style>
 </head>
 <body>
 
 <span class="mode-badge" id="mode-badge"></span>
+<a class="map-link" href="/map.html">&#9679; see the world</a>
 
 <div class="container">
 
@@ -304,9 +335,11 @@
     <p class="eyebrow">A small reminder</p>
     <h1>What's on your mind?</h1>
     <p class="subtitle">Share what's worrying you. It stays anonymous,<br>and it might help to know you're not alone.</p>
+    <p class="privacy-notice">Your worry will be stored anonymously and may be shown to others as a reminder they're not alone. No IP address or personal data is ever saved.</p>
     <textarea id="worry-input" maxlength="280" placeholder="Type your worry here…" rows="4" oninput="updateCount()"></textarea>
     <div class="char-count"><span id="char-count">0</span> / 280</div>
     <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>Share it</button>
+    <p id="submit-error" style="display:none; font-size:0.78rem; color:var(--accent); margin-top:0.8rem; font-weight:300;"></p>
   </div>
 
   <!-- SCREEN 2: Loading -->
@@ -319,10 +352,10 @@
   <!-- SCREEN 3: Result -->
   <div id="screen-result">
     <div class="result-card">
-      <p class="result-label">a message for you</p>
+      <p class="result-label" id="result-label">a message for you</p>
       <p class="result-message" id="result-message"></p>
       <div class="divider"></div>
-      <p class="result-note">Your worry was shared anonymously. Someone, somewhere, understands.</p>
+      <p class="result-note" id="result-note">Your worry was shared anonymously. Someone, somewhere, understands.</p>
     </div>
     <button class="ghost" onclick="startOver()">Share another worry</button>
   </div>
@@ -368,47 +401,54 @@
     target.style.animation = 'fadeUp 0.7s ease both';
   }
 
-  async function getLocation() {
-    try {
-      const res = await fetch('https://ipapi.co/json/');
-      const data = await res.json();
-      const city = data.city || '';
-      const country = data.country_name || '';
-      if (city && country) return `${city}, ${country}`;
-      if (country) return country;
-      return 'somewhere in the world';
-    } catch {
-      return 'somewhere in the world';
-    }
-  }
-
-  async function generateOtherWorry(worry) {
-    // Calls your own Netlify Function — API key stays server-side
-    const res = await fetch('/.netlify/functions/worry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ worry }),
-    });
-    const data = await res.json();
-    return data.phrase || null;
-  }
-
   async function submitWorry() {
     const worry = textarea.value.trim();
     if (!worry) return;
 
+    const errEl = document.getElementById('submit-error');
+    errEl.style.display = 'none';
+
     show('screen-loading');
 
-    const [location, otherWorry] = await Promise.all([
-      getLocation(),
-      generateOtherWorry(worry),
-    ]);
+    try {
+      const res = await fetch('/.netlify/functions/worry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ worry }),
+      });
 
-    const worryPhrase = otherWorry || 'the weight of things left unsaid';
-    const message = `You're not alone. Right now, someone from <em>${location}</em> is worried about ${worryPhrase}.`;
+      if (res.status === 429) {
+        const data = await res.json();
+        errEl.textContent = data.error || 'Please wait a few minutes before sharing again.';
+        errEl.style.display = 'block';
+        show('screen-input');
+        return;
+      }
 
-    document.getElementById('result-message').innerHTML = message;
-    show('screen-result');
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+      const { phrase, location, source } = await res.json();
+
+      const worryPhrase = phrase || 'the weight of things left unsaid';
+      const locationStr = location || 'somewhere in the world';
+
+      document.getElementById('result-label').textContent =
+        source === 'real' ? 'someone else\'s worry' : 'a message for you';
+
+      document.getElementById('result-message').innerHTML =
+        `You're not alone. Right now, someone from <em>${locationStr}</em> is also worried about ${worryPhrase}.`;
+
+      document.getElementById('result-note').textContent =
+        source === 'real'
+          ? 'This is a real worry, shared anonymously by someone just like you.'
+          : 'Your worry was shared anonymously. Someone, somewhere, understands.';
+
+      show('screen-result');
+    } catch {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      errEl.style.display = 'block';
+      show('screen-input');
+    }
   }
 
   function startOver() {
