@@ -69,20 +69,26 @@
     transition: color 0.9s ease;
   }
 
-  .map-link {
-    position: fixed;
-    top: 1.5rem;
-    left: 1.8rem;
+  .button-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-secondary {
     font-family: 'Lora', serif;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 400;
     font-style: italic;
     color: var(--muted);
-    text-decoration: none;
-    z-index: 10;
-    opacity: 0.6;
-    transition: color 0.3s, opacity 0.3s;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 4px;
+    cursor: pointer;
+    transition: color 0.25s, text-decoration-color 0.25s;
   }
-  .map-link:hover { color: var(--accent); opacity: 1; }
+  .btn-secondary:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
   /* Container */
   .container {
@@ -103,17 +109,6 @@
   }
 
   /* Input screen */
-  .eyebrow {
-    font-family: 'Lora', serif;
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1rem;
-    transition: color 0.9s ease;
-  }
-
   h1 {
     font-family: 'Fraunces', serif;
     font-size: clamp(2.2rem, 5.5vw, 3rem);
@@ -137,16 +132,13 @@
 
   .privacy-notice {
     font-family: 'Lora', serif;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 400;
     font-style: italic;
     color: var(--muted);
-    opacity: 0.7;
-    margin-bottom: 2rem;
-    line-height: 1.75;
-    padding-left: 0.9rem;
-    border-left: 1px solid var(--border);
-    transition: var(--transition);
+    opacity: 0.6;
+    margin-bottom: 1.4rem;
+    transition: color 0.9s ease;
   }
 
   /* Clean textarea */
@@ -307,19 +299,20 @@
 <body>
 
 <span class="mode-badge" id="mode-badge"></span>
-<a class="map-link" href="/map.html">see the world</a>
 
 <div class="container">
 
   <!-- SCREEN 1: Input -->
   <div id="screen-input">
-    <p class="eyebrow">a small reminder</p>
     <h1>What's on your mind?</h1>
     <p class="subtitle">Share what's worrying you. It stays anonymous,<br>and it might help to know you're not alone.</p>
-    <p class="privacy-notice">Your worry will be stored anonymously and may be shown to others as a reminder they're not alone. No IP address or personal data is ever saved.</p>
-    <textarea id="worry-input" maxlength="280" placeholder="write it here…" rows="4" oninput="updateCount()"></textarea>
+    <textarea id="worry-input" maxlength="280" placeholder="I'm worried about…" rows="4" oninput="updateCount()"></textarea>
     <div class="char-count"><span id="char-count">0</span> / 280</div>
-    <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>share it</button>
+    <p class="privacy-notice">Your worry will remain 100% anonymous.</p>
+    <div class="button-row">
+      <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>share it</button>
+      <a class="btn-secondary" href="/map.html">see the world</a>
+    </div>
     <p id="submit-error" style="display:none; font-size:0.85rem; font-style:italic; color:var(--accent); margin-top:1rem;"></p>
   </div>
 
