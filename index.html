@@ -4,39 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You're Not Alone</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #fdf6f7;
-    --text: #2e1f22;
-    --muted: #a08088;
-    --accent: #c4687a;
-    --accent-soft: #e8a0ab;
-    --card: #fff9fa;
-    --border: #ecd5d9;
-    --input-bg: #fff;
-    --blob1: #e8a0ab;
-    --blob2: #f2c4ca;
-    --transition: background 0.6s ease, color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+    --bg:          #f3ead9;
+    --text:        #1c1008;
+    --muted:       #8a6e4e;
+    --accent:      #7a3d22;
+    --accent-warm: #c4703a;
+    --border:      #d4be9e;
+    --ruled:       #e6d8c0;
+    --input-bg:    #f9f3e7;
+    --transition:  background 0.9s ease, color 0.9s ease, border-color 0.9s ease;
   }
 
   html.dark {
-    --bg: #1a1015;
-    --text: #f0e4e7;
-    --muted: #9e7e84;
-    --accent: #d4808f;
-    --accent-soft: #8a4a57;
-    --card: #221519;
-    --border: #3a2028;
-    --input-bg: #1e1217;
-    --blob1: #6b2a38;
-    --blob2: #3d1520;
+    --bg:          #110c07;
+    --text:        #e6d2b4;
+    --muted:       #7a5e3e;
+    --accent:      #bf6e38;
+    --accent-warm: #e08c50;
+    --border:      #2c1e0f;
+    --ruled:       #1e140a;
+    --input-bg:    #160e08;
   }
 
   body {
-    font-family: 'Jost', sans-serif;
+    font-family: 'Crimson Pro', serif;
+    font-weight: 300;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -44,308 +41,329 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 4rem 2rem 3rem;
     position: relative;
-    overflow: hidden;
     transition: var(--transition);
   }
 
-  body::before, body::after {
+  /* Warm ambient light — replaces blobs */
+  body::after {
     content: '';
     position: fixed;
-    border-radius: 50%;
-    filter: blur(90px);
-    opacity: 0.28;
+    inset: 0;
+    background: radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(220, 160, 80, 0.07) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
-    transition: background 0.6s ease, opacity 0.6s ease;
+    transition: opacity 0.9s ease;
   }
-  body::before {
-    width: 560px; height: 560px;
-    background: radial-gradient(circle, var(--blob1), transparent);
-    top: -140px; right: -120px;
+  html.dark body::after {
+    background: radial-gradient(ellipse 80% 45% at 50% 10%,
+      rgba(190, 110, 40, 0.14) 0%, transparent 70%);
   }
-  body::after {
-    width: 420px; height: 420px;
-    background: radial-gradient(circle, var(--blob2), transparent);
-    bottom: -100px; left: -100px;
-  }
-  html.dark body::before { opacity: 0.45; }
-  html.dark body::after  { opacity: 0.38; }
 
+  /* Paper grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    pointer-events: none;
+    z-index: 1000;
+    mix-blend-mode: multiply;
+  }
+  html.dark body::before {
+    mix-blend-mode: screen;
+    opacity: 0.35;
+  }
+
+  /* ── Nav chrome ── */
   .mode-badge {
     position: fixed;
-    top: 1.2rem;
-    right: 1.4rem;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.62rem;
+    top: 1.5rem;
+    right: 1.8rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.78rem;
     font-weight: 300;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-style: italic;
     color: var(--muted);
     z-index: 10;
-    opacity: 0.7;
-    transition: color 0.6s ease;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 560px;
-    text-align: center;
-  }
-
-  #screen-input { animation: fadeUp 0.7s ease both; }
-  #screen-result { display: none; animation: fadeUp 0.7s ease both; }
-  #screen-loading { display: none; animation: fadeUp 0.4s ease both; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .eyebrow {
-    font-size: 0.68rem;
-    font-weight: 300;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.6rem;
-    transition: color 0.6s ease;
-  }
-
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.9rem, 5vw, 2.6rem);
-    font-weight: 400;
-    line-height: 1.3;
-    color: var(--text);
-    margin-bottom: 0.6rem;
-    transition: color 0.6s ease;
-  }
-
-  .subtitle {
-    font-size: 0.93rem;
-    font-weight: 300;
-    color: var(--muted);
-    margin-bottom: 2.4rem;
-    line-height: 1.7;
-    transition: color 0.6s ease;
-  }
-
-  textarea {
-    width: 100%;
-    background: var(--input-bg);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 1.1rem 1.3rem;
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    color: var(--text);
-    resize: none;
-    outline: none;
-    line-height: 1.7;
-    transition: var(--transition), border-color 0.2s, box-shadow 0.2s;
-    min-height: 110px;
-  }
-  textarea::placeholder { color: var(--border); font-style: italic; }
-  textarea:focus {
-    border-color: var(--accent-soft);
-    box-shadow: 0 0 0 3px rgba(196, 104, 122, 0.1);
-  }
-
-  .char-count {
-    text-align: right;
-    font-size: 0.7rem;
-    color: var(--muted);
-    margin-top: 0.4rem;
-    margin-bottom: 1.4rem;
     opacity: 0.6;
-    font-weight: 300;
-    transition: color 0.6s ease;
-  }
-
-  button.primary {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    padding: 0.85rem 2.4rem;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 300;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.15s, box-shadow 0.2s;
-  }
-  button.primary:hover {
-    background: #b05568;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(196, 104, 122, 0.3);
-  }
-  html.dark button.primary:hover {
-    box-shadow: 0 4px 20px rgba(212, 128, 143, 0.4);
-  }
-  button.primary:active { transform: translateY(0); box-shadow: none; }
-  button.primary:disabled { opacity: 0.35; cursor: default; transform: none; box-shadow: none; }
-
-  button.ghost {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    border-radius: 50px;
-    padding: 0.75rem 2rem;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 300;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s, transform 0.15s;
-    margin-top: 1rem;
-  }
-  button.ghost:hover { border-color: var(--accent-soft); color: var(--accent); transform: translateY(-1px); }
-
-  .loading-wrap { padding: 3rem 0; }
-  .dots {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-  .dots span {
-    width: 7px; height: 7px;
-    background: var(--accent-soft);
-    border-radius: 50%;
-    animation: bounce 1.2s infinite ease-in-out;
-    transition: background 0.6s ease;
-  }
-  .dots span:nth-child(2) { animation-delay: 0.2s; }
-  .dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-    40% { transform: translateY(-10px); opacity: 1; }
-  }
-
-  .result-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2.4rem 2.2rem;
-    margin-bottom: 1.6rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 24px rgba(196, 104, 122, 0.07);
-    transition: var(--transition);
-  }
-  html.dark .result-card { box-shadow: 0 2px 32px rgba(0, 0, 0, 0.4); }
-  .result-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-soft), var(--blob2));
-    border-radius: 20px 20px 0 0;
-    transition: background 0.6s ease;
-  }
-
-  .result-label {
-    font-size: 0.67rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent-soft);
-    margin-bottom: 1.1rem;
-    font-weight: 300;
-    transition: color 0.6s ease;
-  }
-
-  .result-message {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.15rem, 3vw, 1.4rem);
-    line-height: 1.7;
-    color: var(--text);
-    font-weight: 400;
-    transition: color 0.6s ease;
-  }
-  .result-message em { font-style: italic; color: var(--accent); transition: color 0.6s ease; }
-
-  .divider {
-    width: 32px; height: 1px;
-    background: var(--border);
-    margin: 1.4rem auto;
-    transition: background 0.6s ease;
-  }
-
-  .result-note {
-    font-size: 0.83rem;
-    font-weight: 300;
-    color: var(--muted);
-    line-height: 1.65;
-    transition: color 0.6s ease;
-  }
-
-  footer {
-    margin-top: 3rem;
-    font-size: 0.68rem;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    color: var(--border);
-    transition: color 0.6s ease;
+    transition: color 0.9s ease;
   }
 
   .map-link {
     position: fixed;
-    top: 1.2rem;
-    left: 1.4rem;
-    font-family: 'Jost', sans-serif;
-    font-size: 0.62rem;
+    top: 1.5rem;
+    left: 1.8rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.78rem;
     font-weight: 300;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-style: italic;
     color: var(--muted);
     text-decoration: none;
     z-index: 10;
-    opacity: 0.7;
+    opacity: 0.6;
     transition: color 0.3s, opacity 0.3s;
   }
   .map-link:hover { color: var(--accent); opacity: 1; }
 
-  .privacy-notice {
-    font-size: 0.72rem;
+  /* ── Container ── */
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  /* ── Screen transitions ── */
+  /* JS hardcodes 'fadeUp' — redefine it as a soft blur-fade */
+  #screen-input  { animation: fadeUp 1s ease both; }
+  #screen-result { display: none; animation: fadeUp 1s ease both; }
+  #screen-loading { display: none; animation: fadeUp 0.5s ease both; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; filter: blur(4px); transform: translateY(6px); }
+    to   { opacity: 1; filter: blur(0);   transform: translateY(0); }
+  }
+
+  /* ── Input screen ── */
+  .eyebrow {
+    font-size: 0.74rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    transition: color 0.9s ease;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+    transition: color 0.9s ease;
+  }
+
+  .subtitle {
+    font-size: 1.05rem;
     font-weight: 300;
     color: var(--muted);
-    opacity: 0.75;
     margin-bottom: 1.4rem;
-    line-height: 1.6;
-    padding: 0.6rem 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    line-height: 1.75;
+    transition: color 0.9s ease;
+  }
+
+  .privacy-notice {
+    font-size: 0.8rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    opacity: 0.65;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    padding-left: 1rem;
+    border-left: 1.5px solid var(--border);
     transition: var(--transition);
+  }
+
+  /* Notebook-ruled textarea */
+  textarea {
+    width: 100%;
+    background-color: var(--input-bg);
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent calc(1.75em - 1px),
+      var(--ruled) calc(1.75em - 1px),
+      var(--ruled) 1.75em
+    );
+    background-size: 100% 1.75em;
+    background-attachment: local;
+    border: none;
+    border-bottom: 1.5px solid var(--border);
+    padding: 0.15em 0.3em 0.5em;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--text);
+    resize: none;
+    outline: none;
+    line-height: 1.75em;
+    min-height: calc(1.75em * 5);
+    transition: border-color 0.3s ease, background-color 0.9s ease;
+  }
+  textarea::placeholder {
+    color: var(--border);
+    font-style: italic;
+  }
+  textarea:focus {
+    border-bottom-color: var(--accent);
+  }
+
+  .char-count {
+    text-align: right;
+    font-size: 0.73rem;
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.45;
+    font-weight: 300;
+    font-variant-numeric: oldstyle-nums;
+    transition: color 0.9s ease;
+  }
+
+  button.primary {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: 2px;
+    padding: 0.82rem 2.8rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background 0.4s ease, transform 0.12s ease;
+  }
+  button.primary:hover:not(:disabled) {
+    background: var(--accent);
+    transform: translateY(-1px);
+  }
+  button.primary:active:not(:disabled) { transform: translateY(0); }
+  button.primary:disabled { opacity: 0.2; cursor: default; }
+
+  button.ghost {
+    display: block;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    font-style: italic;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 4px;
+    padding: 0;
+    margin-top: 1.6rem;
+    transition: color 0.3s, text-decoration-color 0.3s;
+  }
+  button.ghost:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+  }
+
+  /* ── Loading ── */
+  .loading-wrap {
+    padding: 4.5rem 0;
+    text-align: center;
+  }
+  .loading-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.5rem;
+    color: var(--muted);
+    animation: breathe 2.8s ease-in-out infinite;
+    letter-spacing: 0.02em;
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.2; }
+    50%       { opacity: 0.8; }
+  }
+
+  /* ── Result ── */
+  .result-card {
+    margin-bottom: 0.4rem;
+  }
+
+  .result-label {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.72rem;
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+    opacity: 0.65;
+    transition: color 0.9s ease;
+  }
+
+  .result-message {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 3.8vw, 1.75rem);
+    line-height: 1.6;
+    color: var(--text);
+    font-weight: 400;
+    padding-left: 1.3rem;
+    border-left: 2px solid var(--border);
+    margin-bottom: 1.8rem;
+    transition: color 0.9s ease, border-color 0.9s ease;
+  }
+  .result-message em {
+    font-style: italic;
+    color: var(--accent-warm);
+    transition: color 0.9s ease;
+  }
+
+  .divider { display: none; }
+
+  .result-note {
+    font-size: 0.85rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.7;
+    opacity: 0.7;
+    padding-left: 1.3rem;
+    transition: color 0.9s ease;
+  }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 3.5rem;
+    font-size: 0.7rem;
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    opacity: 0.35;
+    transition: color 0.9s ease;
   }
 </style>
 </head>
 <body>
 
 <span class="mode-badge" id="mode-badge"></span>
-<a class="map-link" href="/map.html">&#9679; see the world</a>
+<a class="map-link" href="/map.html">see the world</a>
 
 <div class="container">
 
   <!-- SCREEN 1: Input -->
   <div id="screen-input">
-    <p class="eyebrow">A small reminder</p>
+    <p class="eyebrow">a small reminder</p>
     <h1>What's on your mind?</h1>
     <p class="subtitle">Share what's worrying you. It stays anonymous,<br>and it might help to know you're not alone.</p>
     <p class="privacy-notice">Your worry will be stored anonymously and may be shown to others as a reminder they're not alone. No IP address or personal data is ever saved.</p>
-    <textarea id="worry-input" maxlength="280" placeholder="Type your worry here…" rows="4" oninput="updateCount()"></textarea>
+    <textarea id="worry-input" maxlength="280" placeholder="write it here…" rows="4" oninput="updateCount()"></textarea>
     <div class="char-count"><span id="char-count">0</span> / 280</div>
-    <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>Share it</button>
-    <p id="submit-error" style="display:none; font-size:0.78rem; color:var(--accent); margin-top:0.8rem; font-weight:300;"></p>
+    <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>share it</button>
+    <p id="submit-error" style="display:none; font-size:0.85rem; font-style:italic; color:var(--accent); margin-top:1rem; font-weight:300;"></p>
   </div>
 
   <!-- SCREEN 2: Loading -->
   <div id="screen-loading">
     <div class="loading-wrap">
-      <div class="dots"><span></span><span></span><span></span></div>
+      <p class="loading-text">listening&hellip;</p>
     </div>
   </div>
 
@@ -357,12 +375,12 @@
       <div class="divider"></div>
       <p class="result-note" id="result-note">Your worry was shared anonymously. Someone, somewhere, understands.</p>
     </div>
-    <button class="ghost" onclick="startOver()">Share another worry</button>
+    <button class="ghost" onclick="startOver()">share another worry</button>
   </div>
 
 </div>
 
-<footer>you are not alone · all worries anonymous</footer>
+<footer>you are not alone &middot; all worries anonymous</footer>
 
 <script>
   const textarea = document.getElementById('worry-input');
