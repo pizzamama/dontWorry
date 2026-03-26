@@ -4,36 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Worry Map · You're Not Alone</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #f8f5f1;
-    --text:        #272018;
-    --muted:       #978b81;
-    --accent:      #a06058;
-    --accent-warm: #b87262;
-    --border:      #ddd3cb;
+    --bg:           #dfe8f0;
+    --glass:        rgba(255, 255, 255, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.78);
+    --glass-shadow: rgba(120, 140, 170, 0.13);
+    --text:         #252032;
+    --text-sub:     #5a5368;
+    --muted:        #8c8498;
+    --accent:       #7a6898;
+    --field-border: rgba(122, 104, 152, 0.22);
+    --transition:   0.9s ease;
   }
+
   html.dark {
-    --bg:          #151009;
-    --text:        #e8d8c0;
-    --muted:       #7e6b58;
-    --accent:      #c07050;
-    --accent-warm: #d88860;
-    --border:      #302018;
+    --bg:           #0c0e1a;
+    --glass:        rgba(16, 14, 32, 0.58);
+    --glass-border: rgba(255, 255, 255, 0.055);
+    --glass-shadow: rgba(0, 0, 0, 0.45);
+    --text:         #ddd8f2;
+    --text-sub:     #9d96bc;
+    --muted:        #6a6480;
+    --accent:       #bba8d8;
+    --field-border: rgba(187, 168, 216, 0.18);
   }
 
   html, body { height: 100%; width: 100%; overflow: hidden; }
 
   body {
-    font-family: 'Lora', serif;
+    font-family: 'Crimson Pro', serif;
     background: var(--bg);
     color: var(--text);
     position: relative;
+    transition: background var(--transition);
   }
 
   #map {
@@ -42,102 +51,130 @@
     z-index: 0;
   }
 
-  /* Leaflet overrides */
+  /* ── Leaflet overrides ── */
   .leaflet-control-attribution {
-    font-family: 'Lora', serif !important;
+    font-family: 'Crimson Pro', serif !important;
     font-size: 0.65rem !important;
     font-style: italic !important;
     background: transparent !important;
     color: var(--muted) !important;
     box-shadow: none !important;
-    opacity: 0.6;
+    opacity: 0.55;
   }
   .leaflet-control-attribution a { color: var(--muted) !important; }
 
+  .leaflet-control-zoom {
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 12px var(--glass-shadow) !important;
+  }
   .leaflet-control-zoom a {
-    font-family: 'Lora', serif !important;
+    font-family: 'Crimson Pro', serif !important;
     font-weight: 400 !important;
     color: var(--muted) !important;
-    background: var(--bg) !important;
-    border-color: var(--border) !important;
+    background: var(--glass) !important;
+    border-color: var(--field-border) !important;
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
   }
   .leaflet-control-zoom a:hover {
     color: var(--accent) !important;
-    background: var(--bg) !important;
-  }
-  html.dark .leaflet-control-zoom a {
-    background: var(--bg) !important;
-    border-color: var(--border) !important;
+    background: var(--glass) !important;
   }
 
-  /* Header label */
+  /* ── Glass header ── */
   .map-header {
     position: absolute;
-    top: 2.2rem;
+    top: 2rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
     text-align: center;
     pointer-events: none;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1.1rem 2.4rem 1.2rem;
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(1.5);
+    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 1.1rem 2.6rem 1.25rem;
     min-width: 220px;
     max-width: 88vw;
-    transition: background 0.9s, border-color 0.9s;
+    box-shadow:
+      0 4px 24px var(--glass-shadow),
+      0 1px 0 var(--glass-border) inset;
+    transition:
+      background var(--transition),
+      border-color var(--transition),
+      box-shadow var(--transition);
+    animation: drop-in 0.75s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  @keyframes drop-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 
   .eyebrow {
-    font-family: 'Lora', serif;
-    font-size: 0.68rem;
-    font-weight: 400;
-    letter-spacing: 0.12em;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.28rem;
     opacity: 0.75;
-    transition: color 0.9s;
+    transition: color var(--transition);
   }
 
   h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(1.3rem, 4vw, 1.8rem);
-    font-weight: 400;
+    font-family: 'Cormorant', serif;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-weight: 300;
+    font-style: italic;
     color: var(--text);
-    margin-bottom: 0.3rem;
     letter-spacing: -0.01em;
-    transition: color 0.9s;
+    margin-bottom: 0.25rem;
+    transition: color var(--transition);
   }
 
   .subtitle {
-    font-family: 'Lora', serif;
+    font-family: 'Crimson Pro', serif;
     font-size: 0.8rem;
-    font-weight: 400;
+    font-weight: 300;
     font-style: italic;
     color: var(--muted);
-    opacity: 0.75;
-    transition: color 0.9s;
+    opacity: 0.8;
+    transition: color var(--transition);
   }
 
-  /* Back link */
+  /* ── Back link ── */
   .home-link {
     position: absolute;
     bottom: 1.8rem;
     left: 1.8rem;
     z-index: 10;
-    font-family: 'Lora', serif;
-    font-size: 0.78rem;
-    font-weight: 400;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.82rem;
+    font-weight: 300;
     font-style: italic;
     color: var(--muted);
     text-decoration: none;
-    opacity: 0.65;
-    transition: color 0.3s, opacity 0.3s;
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    padding: 0.42rem 1rem;
+    box-shadow: 0 2px 12px var(--glass-shadow);
+    opacity: 0.85;
+    transition: color 0.2s, opacity 0.2s, border-color 0.2s;
   }
-  .home-link:hover { color: var(--accent); opacity: 1; }
+  .home-link:hover { color: var(--accent); opacity: 1; border-color: var(--field-border); }
 
-  /* Heartbeat marker */
+  /* ── Heartbeat marker ── */
   .hb-wrap {
     position: relative;
     width: 10px;
@@ -146,18 +183,16 @@
   .hb-dot {
     width: 8px;
     height: 8px;
-    background: var(--accent, #a06058);
     border-radius: 50%;
     position: absolute;
-    top: 1px;
-    left: 1px;
-    opacity: 0.85;
+    top: 1px; left: 1px;
+    opacity: 0.9;
   }
   .hb-ring {
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    border: 1px solid var(--accent, #a06058);
+    border: 1px solid;
     animation: hb-pulse 2.8s ease-out infinite;
     opacity: 0;
   }
@@ -180,10 +215,14 @@
 <a class="home-link" href="/">&#8592; back</a>
 
 <script>
-  (function() {
-    const hour = new Date().getHours();
-    if (hour >= 21 || hour < 6) document.documentElement.classList.add('dark');
-  })();
+  function applyTheme() {
+    const hour    = new Date().getHours();
+    const isNight = hour >= 21 || hour < 6;
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', isNight || sysDark);
+  }
+  applyTheme();
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 
   const isDark = document.documentElement.classList.contains('dark');
 
@@ -219,11 +258,12 @@
         ? 'No worries shared yet — be the first.'
         : `${heartbeats.length} ${heartbeats.length === 1 ? 'worry' : 'worries'} shared recently`;
 
+      const accentColor = isDark ? '#bba8d8' : '#7a6898';
+
       heartbeats.forEach((h, i) => {
         if (typeof h.lat !== 'number' || typeof h.lng !== 'number') return;
 
         const delay = ((i * 0.38) % 2.8).toFixed(2);
-        const accentColor = isDark ? '#d88860' : '#a06058';
         const icon = L.divIcon({
           className: '',
           html: `<div class="hb-wrap">
