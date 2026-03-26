@@ -4,159 +4,225 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You're Not Alone</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #f7f4ef;
-    --text:        #26190e;
-    --muted:       #9c8e82;
-    --accent:      #a06058;
-    --accent-warm: #b87060;
-    --border:      #ddd3c8;
-    --input-bg:    #ffffff;
-    --transition:  background 0.9s ease, color 0.9s ease, border-color 0.9s ease;
+    --bg:              #dfe8f0;
+    --blob-a:          rgba(178, 215, 230, 0.72);
+    --blob-b:          rgba(225, 195, 215, 0.62);
+    --blob-c:          rgba(190, 220, 200, 0.55);
+    --glass:           rgba(255, 255, 255, 0.5);
+    --glass-border:    rgba(255, 255, 255, 0.78);
+    --glass-shadow:    rgba(120, 140, 170, 0.13);
+    --text:            #252032;
+    --text-sub:        #5a5368;
+    --muted:           #8c8498;
+    --accent:          #7a6898;
+    --accent-tint:     rgba(122, 104, 152, 0.1);
+    --accent-ring:     rgba(122, 104, 152, 0.18);
+    --field-border:    rgba(122, 104, 152, 0.22);
+    --field-focus:     rgba(122, 104, 152, 0.42);
+    --btn-bg:          #252032;
+    --btn-fg:          #eeebf8;
+    --transition:      0.9s ease;
   }
 
   html.dark {
-    --bg:          #141009;
-    --text:        #e8d8c0;
-    --muted:       #7e6b58;
-    --accent:      #c07050;
-    --accent-warm: #d88860;
-    --border:      #2e1c0e;
-    --input-bg:    #1a120a;
+    --bg:              #0c0e1a;
+    --blob-a:          rgba(28,  55, 100, 0.65);
+    --blob-b:          rgba(68,  28,  80, 0.58);
+    --blob-c:          rgba(18,  52,  62, 0.52);
+    --glass:           rgba(16,  14,  32, 0.58);
+    --glass-border:    rgba(255, 255, 255, 0.055);
+    --glass-shadow:    rgba(0,   0,   0,  0.45);
+    --text:            #ddd8f2;
+    --text-sub:        #9d96bc;
+    --muted:           #6a6480;
+    --accent:          #bba8d8;
+    --accent-tint:     rgba(187, 168, 216, 0.1);
+    --accent-ring:     rgba(187, 168, 216, 0.14);
+    --field-border:    rgba(187, 168, 216, 0.18);
+    --field-focus:     rgba(187, 168, 216, 0.4);
+    --btn-bg:          #ddd8f2;
+    --btn-fg:          #18142a;
   }
 
   body {
-    font-family: 'Lora', serif;
+    font-family: 'Crimson Pro', serif;
     background: var(--bg);
-    color: var(--text);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 5rem 2rem 4rem;
-    transition: var(--transition);
+    padding: 2rem;
+    overflow: hidden;
+    transition: background var(--transition);
   }
 
-  /* Subtle top glow */
-  body::before {
-    content: '';
+  /* ── Blob background ── */
+  .bg {
     position: fixed;
     inset: 0;
-    background: radial-gradient(ellipse 90% 50% at 50% -10%,
-      rgba(190, 130, 70, 0.07) 0%, transparent 60%);
-    pointer-events: none;
     z-index: 0;
+    overflow: hidden;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+  }
+  .blob-a {
+    width: 60vw; height: 60vw;
+    background: var(--blob-a);
+    top: -15%; left: -12%;
+    animation: drift-a 20s ease-in-out infinite alternate;
+    transition: background var(--transition);
+  }
+  .blob-b {
+    width: 50vw; height: 50vw;
+    background: var(--blob-b);
+    bottom: -10%; right: -8%;
+    animation: drift-b 26s ease-in-out infinite alternate;
+    transition: background var(--transition);
+  }
+  .blob-c {
+    width: 38vw; height: 38vw;
+    background: var(--blob-c);
+    top: 38%; left: 38%;
+    animation: drift-c 32s ease-in-out infinite alternate;
+    transition: background var(--transition);
+  }
+  @keyframes drift-a {
+    from { transform: translate(0,    0)    scale(1);    }
+    to   { transform: translate(9vw,  7vh)  scale(1.07); }
+  }
+  @keyframes drift-b {
+    from { transform: translate(0,    0)    scale(1);    }
+    to   { transform: translate(-7vw,-9vh)  scale(1.05); }
+  }
+  @keyframes drift-c {
+    from { transform: translate(0,   0)    scale(1);    }
+    to   { transform: translate(6vw, -8vh) scale(0.93); }
   }
 
-  /* Mode badge */
+  /* ── Night badge ── */
   .mode-badge {
     position: fixed;
-    top: 1.6rem;
-    right: 2rem;
-    font-family: 'Lora', serif;
-    font-size: 0.72rem;
+    top: 1.4rem;
+    right: 1.8rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.76rem;
     font-style: italic;
     color: var(--muted);
     opacity: 0.55;
     z-index: 10;
-    transition: color 0.9s ease;
+    transition: color var(--transition), opacity var(--transition);
   }
 
-  /* ── Container ── */
+  /* ── Glass card ── */
   .container {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 500px;
+    max-width: 468px;
+    background: var(--glass);
+    backdrop-filter: blur(28px) saturate(1.5);
+    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 26px;
+    padding: 3rem 3.2rem 3rem;
+    box-shadow:
+      0 6px 32px var(--glass-shadow),
+      0 1px 0 var(--glass-border) inset;
     text-align: center;
+    transition:
+      background var(--transition),
+      border-color var(--transition),
+      box-shadow var(--transition);
   }
 
-  /* ── Staggered page-load animation ── */
+  /* ── Page-load stagger ── */
   @keyframes rise {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
-  #screen-input h1          { animation: rise 0.7s ease both; animation-delay: 0ms; }
-  #screen-input .subtitle   { animation: rise 0.7s ease both; animation-delay: 80ms; }
-  #screen-input .input-wrap { animation: rise 0.7s ease both; animation-delay: 160ms; }
-  #screen-input .actions    { animation: rise 0.7s ease both; animation-delay: 230ms; }
-
-  /* Screen swap animation */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  #screen-input   { animation: none; }
+  #screen-input h1          { animation: rise .75s cubic-bezier(.22,.68,0,1.2) both; animation-delay:   0ms; }
+  #screen-input .subtitle   { animation: rise .75s cubic-bezier(.22,.68,0,1.2) both; animation-delay:  90ms; }
+  #screen-input .input-wrap { animation: rise .75s cubic-bezier(.22,.68,0,1.2) both; animation-delay: 175ms; }
+  #screen-input .actions    { animation: rise .75s cubic-bezier(.22,.68,0,1.2) both; animation-delay: 255ms; }
+
   #screen-result  { display: none; }
   #screen-loading { display: none; }
 
-  /* ── Heading ── */
+  /* ── Headings ── */
   h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(2.4rem, 6vw, 3.4rem);
-    font-weight: 400;
-    line-height: 1.15;
-    letter-spacing: -0.025em;
+    font-family: 'Cormorant', serif;
+    font-size: clamp(2.1rem, 6vw, 3rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
     color: var(--text);
     margin-bottom: 0.65rem;
-    transition: color 0.9s ease;
+    transition: color var(--transition);
   }
 
   .subtitle {
-    font-size: 0.95rem;
-    font-weight: 400;
-    color: var(--muted);
-    line-height: 1.75;
-    margin-bottom: 2.8rem;
-    transition: color 0.9s ease;
+    font-size: 0.97rem;
+    font-weight: 300;
+    color: var(--text-sub);
+    line-height: 1.72;
+    margin-bottom: 2.4rem;
+    transition: color var(--transition);
   }
 
-  /* ── Input wrap ── */
-  .input-wrap {
-    margin-bottom: 1.8rem;
-  }
+  /* ── Textarea ── */
+  .input-wrap { margin-bottom: 1.7rem; }
 
   textarea {
     width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--border);
-    padding: 0.4rem 0 0.9rem;
+    background: var(--accent-tint);
+    border: 1px solid var(--field-border);
+    border-radius: 14px;
+    padding: 0.9rem 1.1rem;
     text-align: left;
-    font-family: 'Lora', serif;
+    font-family: 'Crimson Pro', serif;
     font-size: 1.05rem;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 300;
     color: var(--text);
     resize: none;
     outline: none;
-    line-height: 1.75;
+    line-height: 1.72;
     min-height: 7.5rem;
-    transition: border-color 0.25s ease, color 0.9s ease;
+    transition:
+      border-color 0.3s ease,
+      box-shadow   0.3s ease,
+      background   0.3s ease,
+      color        var(--transition);
   }
-  textarea::placeholder {
-    color: var(--border);
-    font-style: italic;
-  }
+  textarea::placeholder { color: var(--muted); font-style: italic; }
   textarea:focus {
-    border-bottom-color: var(--accent);
+    border-color: var(--field-focus);
+    box-shadow: 0 0 0 3.5px var(--accent-ring);
+    background: var(--accent-tint);
   }
 
   .char-count {
     text-align: right;
-    font-size: 0.68rem;
+    font-size: 0.67rem;
     font-style: italic;
     color: var(--muted);
-    margin-top: 0.5rem;
-    opacity: 0.38;
-    transition: color 0.9s ease;
+    margin-top: 0.42rem;
+    opacity: 0.42;
   }
 
   /* ── Actions ── */
@@ -168,145 +234,148 @@
   }
 
   button.primary {
-    background: var(--text);
-    color: var(--bg);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
     border: none;
     border-radius: 100px;
-    padding: 0.8rem 3rem;
-    font-family: 'Lora', serif;
-    font-size: 0.88rem;
+    padding: 0.78rem 2.8rem;
+    font-family: 'Cormorant', serif;
+    font-size: 1rem;
     font-weight: 400;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.09em;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.1s ease;
-    margin-bottom: 1.1rem;
+    margin-bottom: 1.2rem;
+    transition:
+      background var(--transition),
+      color      var(--transition),
+      opacity    0.25s ease,
+      transform  0.12s ease;
   }
-  button.primary:hover:not(:disabled) {
-    background: var(--accent);
-    transform: translateY(-1px);
-  }
+  button.primary:hover:not(:disabled) { opacity: 0.8; transform: translateY(-1px); }
   button.primary:active:not(:disabled) { transform: translateY(0); }
-  button.primary:disabled { opacity: 0.18; cursor: default; }
+  button.primary:disabled { opacity: 0.16; cursor: default; }
 
   .secondary-link {
-    font-family: 'Lora', serif;
-    font-size: 0.82rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.86rem;
     font-style: italic;
+    font-weight: 300;
     color: var(--muted);
     text-decoration: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--field-border);
     padding-bottom: 1px;
+    margin-bottom: 1.8rem;
     transition: color 0.2s, border-color 0.2s;
-    margin-bottom: 1.6rem;
   }
-  .secondary-link:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
+  .secondary-link:hover { color: var(--accent); border-color: var(--accent); }
 
   .privacy-notice {
     font-size: 0.7rem;
     font-style: italic;
     color: var(--muted);
     opacity: 0.45;
-    transition: color 0.9s ease;
+    transition: color var(--transition);
   }
 
   #submit-error {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     font-style: italic;
     color: var(--accent);
-    margin-top: 0.9rem;
+    margin-top: 0.85rem;
   }
 
   /* ── Loading ── */
-  .loading-wrap {
-    padding: 5rem 0;
-  }
+  .loading-wrap { padding: 4.5rem 0; }
   .loading-text {
-    font-family: 'Fraunces', serif;
+    font-family: 'Cormorant', serif;
     font-weight: 300;
-    font-size: 1.6rem;
+    font-style: italic;
+    font-size: 1.75rem;
     color: var(--muted);
-    letter-spacing: 0.01em;
-    animation: breathe 2.6s ease-in-out infinite;
+    animation: breathe 2.8s ease-in-out infinite;
+    transition: color var(--transition);
   }
   @keyframes breathe {
-    0%, 100% { opacity: 0.18; }
-    50%       { opacity: 0.9; }
+    0%, 100% { opacity: 0.14; }
+    50%       { opacity: 0.88; }
   }
 
   /* ── Result ── */
   .result-label {
-    font-size: 0.68rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
+    font-size: 0.67rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 1.8rem;
-    opacity: 0.7;
-    transition: color 0.9s ease;
+    opacity: 0.72;
+    transition: color var(--transition);
   }
 
   .result-message {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(1.3rem, 3.8vw, 1.75rem);
-    font-weight: 400;
-    line-height: 1.65;
+    font-family: 'Cormorant', serif;
+    font-size: clamp(1.4rem, 4vw, 1.85rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.62;
     color: var(--text);
-    margin-bottom: 2.2rem;
-    transition: color 0.9s ease;
+    margin-bottom: 2rem;
+    transition: color var(--transition);
   }
   .result-message em {
-    font-style: italic;
-    color: var(--accent-warm);
-    transition: color 0.9s ease;
+    font-style: normal;
+    color: var(--accent);
+    transition: color var(--transition);
   }
 
   .result-note {
-    font-size: 0.82rem;
+    font-size: 0.9rem;
     font-style: italic;
-    color: var(--muted);
-    line-height: 1.75;
-    opacity: 0.6;
-    margin-bottom: 2.4rem;
-    transition: color 0.9s ease;
+    font-weight: 300;
+    color: var(--text-sub);
+    line-height: 1.72;
+    opacity: 0.65;
+    margin-bottom: 2.5rem;
+    transition: color var(--transition);
   }
 
   button.ghost {
     background: none;
     border: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--field-border);
     padding-bottom: 1px;
-    font-family: 'Lora', serif;
-    font-size: 0.82rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.86rem;
     font-style: italic;
+    font-weight: 300;
     color: var(--muted);
     cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
   }
-  button.ghost:hover {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
+  button.ghost:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ── Footer ── */
   footer {
     position: fixed;
-    bottom: 1.6rem;
+    bottom: 1.4rem;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
     color: var(--muted);
-    opacity: 0.3;
+    opacity: 0.28;
     white-space: nowrap;
-    transition: color 0.9s ease;
     z-index: 1;
+    transition: color var(--transition);
   }
 </style>
 </head>
 <body>
+
+<div class="bg">
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+  <div class="blob blob-c"></div>
+</div>
 
 <span class="mode-badge" id="mode-badge"></span>
 
@@ -350,13 +419,17 @@
 <footer>you are not alone &middot; all worries anonymous</footer>
 
 <script>
-  const textarea = document.getElementById('worry-input');
+  const textarea  = document.getElementById('worry-input');
   const submitBtn = document.getElementById('submit-btn');
 
   function applyTheme() {
-    const hour = new Date().getHours();
-    const isNight = hour >= 21 || hour < 6;
-    document.documentElement.classList.toggle('dark', isNight);
+    const hour     = new Date().getHours();
+    const isNight  = hour >= 21 || hour < 6;
+    const sysDark  = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const dark     = isNight || sysDark;
+
+    document.documentElement.classList.toggle('dark', dark);
+
     const badge = document.getElementById('mode-badge');
     if (isNight) {
       const phrases = ['late night', 'quiet hours', 'the small hours'];
@@ -365,8 +438,10 @@
       badge.textContent = '';
     }
   }
+
   applyTheme();
-  setInterval(applyTheme, 60 * 1000);
+  setInterval(applyTheme, 60_000);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 
   function updateCount() {
     document.getElementById('char-count').textContent = textarea.value.length;
@@ -374,15 +449,15 @@
   }
 
   function show(screenId) {
-    ['screen-input','screen-loading','screen-result'].forEach(id => {
+    ['screen-input', 'screen-loading', 'screen-result'].forEach(id => {
       const el = document.getElementById(id);
-      el.style.display = 'none';
+      el.style.display   = 'none';
       el.style.animation = 'none';
     });
     const target = document.getElementById(screenId);
     target.style.display = 'block';
     void target.offsetWidth;
-    target.style.animation = 'fadeUp 0.65s ease both';
+    target.style.animation = 'fadeUp 0.65s cubic-bezier(.22,.68,0,1.2) both';
   }
 
   async function submitWorry() {
@@ -391,19 +466,18 @@
 
     const errEl = document.getElementById('submit-error');
     errEl.style.display = 'none';
-
     show('screen-loading');
 
     try {
       const res = await fetch('/.netlify/functions/worry', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ worry }),
+        body:    JSON.stringify({ worry }),
       });
 
       if (res.status === 429) {
         const data = await res.json();
-        errEl.textContent = data.error || 'Please wait a few minutes before sharing again.';
+        errEl.textContent   = data.error || 'Please wait a few minutes before sharing again.';
         errEl.style.display = 'block';
         show('screen-input');
         return;
@@ -412,25 +486,24 @@
       if (!res.ok) throw new Error(`Server error ${res.status}`);
 
       const { phrase, location, source } = await res.json();
-
-      const worryPhrase = phrase || 'the weight of things left unsaid';
-      const locationStr = location || 'somewhere in the world';
+      const worryPhrase  = phrase   || 'the weight of things left unsaid';
+      const locationStr  = location || 'somewhere in the world';
 
       if (source === 'none') {
-        document.getElementById('result-label').textContent = 'your worry was heard';
-        document.getElementById('result-message').innerHTML = `You're the first. Your worry has been shared anonymously — come back soon and you'll see you're not alone.`;
-        document.getElementById('result-note').textContent = 'As others share, you\'ll be shown their worries too.';
+        document.getElementById('result-label').textContent   = 'your worry was heard';
+        document.getElementById('result-message').innerHTML   = `You're the first. Your worry has been shared anonymously — come back soon and you'll see you're not alone.`;
+        document.getElementById('result-note').textContent    = "As others share, you'll be shown their worries too.";
       } else {
-        document.getElementById('result-label').textContent = 'someone else\'s worry';
-        document.getElementById('result-message').innerHTML =
+        document.getElementById('result-label').textContent   = "someone else's worry";
+        document.getElementById('result-message').innerHTML   =
           `You're not alone. Right now, someone from <em>${locationStr}</em> is worried about ${worryPhrase}.`;
-        document.getElementById('result-note').textContent =
+        document.getElementById('result-note').textContent    =
           'This is a real worry, shared anonymously by someone just like you.';
       }
 
       show('screen-result');
     } catch {
-      errEl.textContent = 'Something went wrong. Please try again.';
+      errEl.textContent   = 'Something went wrong. Please try again.';
       errEl.style.display = 'block';
       show('screen-input');
     }
