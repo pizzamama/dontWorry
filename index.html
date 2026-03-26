@@ -4,34 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You're Not Alone</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #f8f5f1;
-    --text:        #272018;
-    --muted:       #978b81;
+    --bg:          #f7f4ef;
+    --text:        #26190e;
+    --muted:       #9c8e82;
     --accent:      #a06058;
-    --accent-warm: #b87262;
-    --border:      #ddd3cb;
+    --accent-warm: #b87060;
+    --border:      #ddd3c8;
     --input-bg:    #ffffff;
     --transition:  background 0.9s ease, color 0.9s ease, border-color 0.9s ease;
   }
 
   html.dark {
-    --bg:          #151009;
+    --bg:          #141009;
     --text:        #e8d8c0;
     --muted:       #7e6b58;
     --accent:      #c07050;
     --accent-warm: #d88860;
-    --border:      #302018;
+    --border:      #2e1c0e;
     --input-bg:    #1a120a;
   }
 
   body {
     font-family: 'Lora', serif;
-    font-weight: 400;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -39,144 +38,133 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem 3rem;
-    position: relative;
+    padding: 5rem 2rem 4rem;
     transition: var(--transition);
   }
 
-  /* Soft ambient warmth */
-  body::after {
+  /* Subtle top glow */
+  body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background: radial-gradient(ellipse 100% 60% at 50% 0%,
-      rgba(200, 140, 80, 0.05) 0%, transparent 70%);
+    background: radial-gradient(ellipse 90% 50% at 50% -10%,
+      rgba(190, 130, 70, 0.07) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
 
-  /* Nav chrome */
+  /* Mode badge */
   .mode-badge {
     position: fixed;
-    top: 1.5rem;
-    right: 1.8rem;
+    top: 1.6rem;
+    right: 2rem;
     font-family: 'Lora', serif;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-style: italic;
     color: var(--muted);
+    opacity: 0.55;
     z-index: 10;
-    opacity: 0.6;
     transition: color 0.9s ease;
   }
 
-  .button-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .btn-secondary {
-    font-family: 'Lora', serif;
-    font-size: 0.85rem;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--muted);
-    text-decoration: underline;
-    text-decoration-color: var(--border);
-    text-underline-offset: 4px;
-    cursor: pointer;
-    transition: color 0.25s, text-decoration-color 0.25s;
-  }
-  .btn-secondary:hover { color: var(--accent); text-decoration-color: var(--accent); }
-
-  /* Container */
+  /* ── Container ── */
   .container {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 460px;
+    max-width: 500px;
+    text-align: center;
   }
 
-  /* Screen transitions */
-  #screen-input   { animation: fadeUp 0.9s ease both; }
-  #screen-result  { display: none; animation: fadeUp 0.9s ease both; }
-  #screen-loading { display: none; animation: fadeUp 0.5s ease both; }
+  /* ── Staggered page-load animation ── */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
+  #screen-input h1          { animation: rise 0.7s ease both; animation-delay: 0ms; }
+  #screen-input .subtitle   { animation: rise 0.7s ease both; animation-delay: 80ms; }
+  #screen-input .input-wrap { animation: rise 0.7s ease both; animation-delay: 160ms; }
+  #screen-input .actions    { animation: rise 0.7s ease both; animation-delay: 230ms; }
+
+  /* Screen swap animation */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Input screen */
+  #screen-input   { animation: none; }
+  #screen-result  { display: none; }
+  #screen-loading { display: none; }
+
+  /* ── Heading ── */
   h1 {
     font-family: 'Fraunces', serif;
-    font-size: clamp(2.2rem, 5.5vw, 3rem);
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
     font-weight: 400;
-    line-height: 1.2;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
     color: var(--text);
-    margin-bottom: 1.1rem;
-    letter-spacing: -0.02em;
+    margin-bottom: 0.65rem;
     transition: color 0.9s ease;
   }
 
   .subtitle {
-    font-family: 'Lora', serif;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 400;
     color: var(--muted);
-    margin-bottom: 1.6rem;
-    line-height: 1.8;
+    line-height: 1.75;
+    margin-bottom: 2.8rem;
     transition: color 0.9s ease;
   }
 
-  .privacy-notice {
-    font-family: 'Lora', serif;
-    font-size: 0.78rem;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--muted);
-    opacity: 0.6;
-    margin-bottom: 1.4rem;
-    transition: color 0.9s ease;
+  /* ── Input wrap ── */
+  .input-wrap {
+    margin-bottom: 1.8rem;
   }
 
-  /* Clean textarea */
   textarea {
     width: 100%;
-    background: var(--input-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.9rem 1rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.4rem 0 0.9rem;
+    text-align: left;
     font-family: 'Lora', serif;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-style: italic;
     font-weight: 400;
     color: var(--text);
     resize: none;
     outline: none;
-    line-height: 1.7;
-    min-height: 8rem;
-    transition: border-color 0.25s ease, background 0.9s ease, color 0.9s ease;
+    line-height: 1.75;
+    min-height: 7.5rem;
+    transition: border-color 0.25s ease, color 0.9s ease;
   }
   textarea::placeholder {
     color: var(--border);
     font-style: italic;
   }
   textarea:focus {
-    border-color: var(--muted);
+    border-bottom-color: var(--accent);
   }
 
   .char-count {
-    font-family: 'Lora', serif;
     text-align: right;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-style: italic;
     color: var(--muted);
-    margin-top: 0.45rem;
-    margin-bottom: 2rem;
-    opacity: 0.45;
+    margin-top: 0.5rem;
+    opacity: 0.38;
     transition: color 0.9s ease;
+  }
+
+  /* ── Actions ── */
+  .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
   }
 
   button.primary {
@@ -184,13 +172,14 @@
     color: var(--bg);
     border: none;
     border-radius: 100px;
-    padding: 0.78rem 2.6rem;
+    padding: 0.8rem 3rem;
     font-family: 'Lora', serif;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     font-weight: 400;
     letter-spacing: 0.1em;
     cursor: pointer;
-    transition: background 0.35s ease, transform 0.1s ease;
+    transition: background 0.3s ease, transform 0.1s ease;
+    margin-bottom: 1.1rem;
   }
   button.primary:hover:not(:disabled) {
     background: var(--accent);
@@ -199,69 +188,73 @@
   button.primary:active:not(:disabled) { transform: translateY(0); }
   button.primary:disabled { opacity: 0.18; cursor: default; }
 
-  button.ghost {
-    display: block;
-    background: none;
-    border: none;
-    color: var(--muted);
+  .secondary-link {
     font-family: 'Lora', serif;
-    font-size: 0.85rem;
-    font-weight: 400;
+    font-size: 0.82rem;
     font-style: italic;
-    cursor: pointer;
-    text-decoration: underline;
-    text-decoration-color: var(--border);
-    text-underline-offset: 4px;
-    padding: 0;
-    margin-top: 1.8rem;
-    transition: color 0.25s, text-decoration-color 0.25s;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: 1.6rem;
   }
-  button.ghost:hover {
+  .secondary-link:hover {
     color: var(--accent);
-    text-decoration-color: var(--accent);
+    border-bottom-color: var(--accent);
   }
 
-  /* Loading */
+  .privacy-notice {
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--muted);
+    opacity: 0.45;
+    transition: color 0.9s ease;
+  }
+
+  #submit-error {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--accent);
+    margin-top: 0.9rem;
+  }
+
+  /* ── Loading ── */
   .loading-wrap {
     padding: 5rem 0;
-    text-align: center;
   }
   .loading-text {
     font-family: 'Fraunces', serif;
     font-weight: 300;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     color: var(--muted);
-    animation: breathe 2.6s ease-in-out infinite;
     letter-spacing: 0.01em;
+    animation: breathe 2.6s ease-in-out infinite;
   }
   @keyframes breathe {
-    0%, 100% { opacity: 0.2; }
-    50%       { opacity: 0.85; }
+    0%, 100% { opacity: 0.18; }
+    50%       { opacity: 0.9; }
   }
 
-  /* Result */
-  .result-card {
-    margin-bottom: 0.4rem;
-  }
-
+  /* ── Result ── */
   .result-label {
-    font-family: 'Lora', serif;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 400;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.8rem;
+    opacity: 0.7;
     transition: color 0.9s ease;
   }
 
   .result-message {
     font-family: 'Fraunces', serif;
-    font-size: clamp(1.25rem, 3.5vw, 1.6rem);
-    line-height: 1.7;
-    color: var(--text);
+    font-size: clamp(1.3rem, 3.8vw, 1.75rem);
     font-weight: 400;
-    margin-bottom: 2rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 2.2rem;
     transition: color 0.9s ease;
   }
   .result-message em {
@@ -270,29 +263,46 @@
     transition: color 0.9s ease;
   }
 
-  .divider { display: none; }
-
   .result-note {
-    font-family: 'Lora', serif;
     font-size: 0.82rem;
-    font-weight: 400;
     font-style: italic;
     color: var(--muted);
     line-height: 1.75;
-    opacity: 0.65;
+    opacity: 0.6;
+    margin-bottom: 2.4rem;
     transition: color 0.9s ease;
   }
 
-  /* Footer */
-  footer {
-    margin-top: 4rem;
+  button.ghost {
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
     font-family: 'Lora', serif;
-    font-size: 0.7rem;
-    font-weight: 400;
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  button.ghost:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Footer ── */
+  footer {
+    position: fixed;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
     letter-spacing: 0.06em;
     color: var(--muted);
-    opacity: 0.35;
+    opacity: 0.3;
+    white-space: nowrap;
     transition: color 0.9s ease;
+    z-index: 1;
   }
 </style>
 </head>
@@ -305,15 +315,19 @@
   <!-- SCREEN 1: Input -->
   <div id="screen-input">
     <h1>What's on your mind?</h1>
-    <p class="subtitle">Share what's worrying you. It stays anonymous,<br>and it might help to know you're not alone.</p>
-    <textarea id="worry-input" maxlength="280" placeholder="I'm worried about…" rows="4" oninput="updateCount()"></textarea>
-    <div class="char-count"><span id="char-count">0</span> / 280</div>
-    <p class="privacy-notice">Your worry will remain 100% anonymous.</p>
-    <div class="button-row">
-      <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>share it</button>
-      <a class="btn-secondary" href="/map.html">see the world</a>
+    <p class="subtitle">Share what's worrying you — it stays anonymous,<br>and it might help to know you're not alone.</p>
+
+    <div class="input-wrap">
+      <textarea id="worry-input" maxlength="280" placeholder="I'm worried about…" rows="4" oninput="updateCount()"></textarea>
+      <div class="char-count"><span id="char-count">0</span> / 280</div>
     </div>
-    <p id="submit-error" style="display:none; font-size:0.85rem; font-style:italic; color:var(--accent); margin-top:1rem;"></p>
+
+    <div class="actions">
+      <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>share it</button>
+      <a class="secondary-link" href="/map.html">see the world</a>
+      <p class="privacy-notice">Your worry will remain 100% anonymous.</p>
+      <p id="submit-error" style="display:none;"></p>
+    </div>
   </div>
 
   <!-- SCREEN 2: Loading -->
@@ -325,12 +339,9 @@
 
   <!-- SCREEN 3: Result -->
   <div id="screen-result">
-    <div class="result-card">
-      <p class="result-label" id="result-label">a message for you</p>
-      <p class="result-message" id="result-message"></p>
-      <div class="divider"></div>
-      <p class="result-note" id="result-note">Your worry was shared anonymously. Someone, somewhere, understands.</p>
-    </div>
+    <p class="result-label" id="result-label">a message for you</p>
+    <p class="result-message" id="result-message"></p>
+    <p class="result-note" id="result-note">Your worry was shared anonymously. Someone, somewhere, understands.</p>
     <button class="ghost" onclick="startOver()">share another worry</button>
   </div>
 
@@ -371,7 +382,7 @@
     const target = document.getElementById(screenId);
     target.style.display = 'block';
     void target.offsetWidth;
-    target.style.animation = 'fadeUp 0.7s ease both';
+    target.style.animation = 'fadeUp 0.65s ease both';
   }
 
   async function submitWorry() {
