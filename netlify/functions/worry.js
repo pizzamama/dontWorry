@@ -53,7 +53,7 @@ exports.handler = async (event) => {
 
   worry = worry.trim().slice(0, 500);
 
-  // Get client IP once
+  // Get client IP
   const ip =
     event.headers['x-nf-client-connection-ip'] ||
     (event.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
@@ -107,71 +107,34 @@ exports.handler = async (event) => {
     }
   }
 
-  // Try to return a real worry from another user
-  let phrase, location, source;
-
+  // Find a real worry from another user
   if (REDIS_AVAILABLE) {
     try {
-      const [len, range] = await redisPipeline([
-        ['LLEN', 'worries'],
-        ['LRANGE', 'worries', '0', '99'],
-      ]);
+      const range = await redisSingle('LRANGE', 'worries', '0', '99');
+      const items = Array.isArray(range) ? range : [];
 
-      if (parseInt(len, 10) >= 5) {
-        const candidates = range
-          .map(s => { try { return JSON.parse(s); } catch { return null; } })
-          .filter(w => w && w.text && w.text !== worry);
+      const candidates = items
+        .map(s => { try { return JSON.parse(s); } catch { return null; } })
+        .filter(w => w && w.text && w.text !== worry);
 
-        if (candidates.length > 0) {
-          const pick = candidates[Math.floor(Math.random() * candidates.length)];
-          phrase = pick.text;
-          location = [pick.city, pick.country].filter(Boolean).join(', ') || 'somewhere in the world';
-          source = 'real';
-        }
+      if (candidates.length > 0) {
+        const pick = candidates[Math.floor(Math.random() * candidates.length)];
+        const location = [pick.city, pick.country].filter(Boolean).join(', ') || 'somewhere in the world';
+        return {
+          statusCode: 200,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phrase: pick.text, location, source: 'real' }),
+        };
       }
     } catch {
-      // Fall through to AI
+      // Fall through to 'none'
     }
   }
 
-  // AI fallback
-  if (!phrase) {
-    try {
-      const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 60,
-          system: `You write a single worry phrase for a compassionate website that reminds people they are not alone.
-
-Complete this sentence fragment: "Right now, someone from [city] is worried about ___."
-
-Rules:
-- Output ONLY the worry phrase that fills the blank — nothing else, no quotes, no punctuation at the end.
-- Generate a worry that is UNRELATED to the user's worry. It belongs to a completely different, anonymous person.
-- It should feel like something a real person genuinely carries — tender and human.
-- Examples: "whether their mother remembers them", "making rent this month", "a friendship that's gone quiet", "not being enough".
-- Lowercase only. No period.`,
-          messages: [{ role: 'user', content: `User's own worry (do not mirror this): "${worry.slice(0, 500)}"` }],
-        }),
-      });
-      const aiData = await aiRes.json();
-      phrase = aiData.content?.[0]?.text?.trim() || 'the weight of things left unsaid';
-    } catch {
-      phrase = 'the weight of things left unsaid';
-    }
-    location = [geo.city, geo.country].filter(Boolean).join(', ') || 'somewhere in the world';
-    source = 'ai';
-  }
-
+  // No real worries available yet
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phrase, location, source }),
+    body: JSON.stringify({ phrase: null, location: null, source: 'none' }),
   };
 };
