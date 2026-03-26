@@ -4,36 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You're Not Alone</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:          #f5ede0;
-    --text:        #1e130b;
-    --muted:       #8a6b50;
-    --accent:      #b54e3a;
-    --accent-warm: #cc7048;
-    --border:      #d4bba0;
-    --ruled:       #e7d5be;
-    --input-bg:    #fdf6ec;
+    --bg:          #f8f5f1;
+    --text:        #272018;
+    --muted:       #978b81;
+    --accent:      #a06058;
+    --accent-warm: #b87262;
+    --border:      #ddd3cb;
+    --input-bg:    #ffffff;
     --transition:  background 0.9s ease, color 0.9s ease, border-color 0.9s ease;
   }
 
   html.dark {
-    --bg:          #110c07;
-    --text:        #e6d2b4;
-    --muted:       #7a5e3e;
-    --accent:      #c46a40;
-    --accent-warm: #e08c50;
-    --border:      #2c1e0f;
-    --ruled:       #1e140a;
-    --input-bg:    #160e08;
+    --bg:          #151009;
+    --text:        #e8d8c0;
+    --muted:       #7e6b58;
+    --accent:      #c07050;
+    --accent-warm: #d88860;
+    --border:      #302018;
+    --input-bg:    #1a120a;
   }
 
   body {
-    font-family: 'Source Serif 4', serif;
-    font-weight: 300;
+    font-family: 'Lora', serif;
+    font-weight: 400;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -46,36 +44,15 @@
     transition: var(--transition);
   }
 
-  /* Warm ambient light */
+  /* Soft ambient warmth */
   body::after {
     content: '';
     position: fixed;
     inset: 0;
-    background: radial-gradient(ellipse 110% 55% at 50% 0%,
-      rgba(210, 140, 70, 0.09) 0%, transparent 65%);
+    background: radial-gradient(ellipse 100% 60% at 50% 0%,
+      rgba(200, 140, 80, 0.05) 0%, transparent 70%);
     pointer-events: none;
     z-index: 0;
-    transition: opacity 0.9s ease;
-  }
-  html.dark body::after {
-    background: radial-gradient(ellipse 80% 45% at 50% 10%,
-      rgba(190, 110, 40, 0.14) 0%, transparent 70%);
-  }
-
-  /* Paper grain */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-    pointer-events: none;
-    z-index: 1000;
-    mix-blend-mode: multiply;
-  }
-  html.dark body::before {
-    mix-blend-mode: screen;
-    opacity: 0.35;
   }
 
   /* Nav chrome */
@@ -83,12 +60,12 @@
     position: fixed;
     top: 1.5rem;
     right: 1.8rem;
-    font-family: 'Caveat', cursive;
-    font-size: 1.05rem;
-    font-weight: 400;
+    font-family: 'Lora', serif;
+    font-size: 0.75rem;
+    font-style: italic;
     color: var(--muted);
     z-index: 10;
-    opacity: 0.55;
+    opacity: 0.6;
     transition: color 0.9s ease;
   }
 
@@ -96,13 +73,13 @@
     position: fixed;
     top: 1.5rem;
     left: 1.8rem;
-    font-family: 'Caveat', cursive;
-    font-size: 1.05rem;
-    font-weight: 400;
+    font-family: 'Lora', serif;
+    font-size: 0.75rem;
+    font-style: italic;
     color: var(--muted);
     text-decoration: none;
     z-index: 10;
-    opacity: 0.55;
+    opacity: 0.6;
     transition: color 0.3s, opacity 0.3s;
   }
   .map-link:hover { color: var(--accent); opacity: 1; }
@@ -112,109 +89,101 @@
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 480px;
+    max-width: 460px;
   }
 
   /* Screen transitions */
-  #screen-input   { animation: fadeUp 1s ease both; }
-  #screen-result  { display: none; animation: fadeUp 1s ease both; }
+  #screen-input   { animation: fadeUp 0.9s ease both; }
+  #screen-result  { display: none; animation: fadeUp 0.9s ease both; }
   #screen-loading { display: none; animation: fadeUp 0.5s ease both; }
 
   @keyframes fadeUp {
-    from { opacity: 0; filter: blur(4px); transform: translateY(6px); }
-    to   { opacity: 1; filter: blur(0);   transform: translateY(0); }
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   /* Input screen */
   .eyebrow {
-    font-family: 'Caveat', cursive;
-    font-size: 1.1rem;
+    font-family: 'Lora', serif;
+    font-size: 0.7rem;
     font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 0.7rem;
-    opacity: 0.8;
+    margin-bottom: 1rem;
     transition: color 0.9s ease;
   }
 
   h1 {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.2rem, 5.5vw, 3rem);
     font-weight: 400;
-    line-height: 1.15;
+    line-height: 1.2;
     color: var(--text);
-    margin-bottom: 1rem;
-    letter-spacing: -0.01em;
+    margin-bottom: 1.1rem;
+    letter-spacing: -0.02em;
     transition: color 0.9s ease;
   }
 
   .subtitle {
-    font-family: 'Source Serif 4', serif;
-    font-size: 1.05rem;
-    font-weight: 300;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-weight: 400;
     color: var(--muted);
-    margin-bottom: 1.4rem;
-    line-height: 1.75;
+    margin-bottom: 1.6rem;
+    line-height: 1.8;
     transition: color 0.9s ease;
   }
 
   .privacy-notice {
-    font-family: 'Source Serif 4', serif;
-    font-size: 0.82rem;
-    font-weight: 300;
+    font-family: 'Lora', serif;
+    font-size: 0.8rem;
+    font-weight: 400;
     font-style: italic;
     color: var(--muted);
-    opacity: 0.65;
+    opacity: 0.7;
     margin-bottom: 2rem;
-    line-height: 1.7;
-    padding-left: 1rem;
-    border-left: 1.5px dashed var(--border);
+    line-height: 1.75;
+    padding-left: 0.9rem;
+    border-left: 1px solid var(--border);
     transition: var(--transition);
   }
 
-  /* Notebook-ruled textarea */
+  /* Clean textarea */
   textarea {
     width: 100%;
-    background-color: var(--input-bg);
-    background-image: repeating-linear-gradient(
-      transparent,
-      transparent calc(1.75em - 1px),
-      var(--ruled) calc(1.75em - 1px),
-      var(--ruled) 1.75em
-    );
-    background-size: 100% 1.75em;
-    background-attachment: local;
-    border: none;
-    border-bottom: 1.5px solid var(--border);
-    padding: 0.15em 0.3em 0.5em;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.9rem 1rem;
+    font-family: 'Lora', serif;
+    font-size: 1rem;
     font-style: italic;
     font-weight: 400;
     color: var(--text);
     resize: none;
     outline: none;
-    line-height: 1.75em;
-    min-height: calc(1.75em * 5);
-    transition: border-color 0.3s ease, background-color 0.9s ease;
+    line-height: 1.7;
+    min-height: 8rem;
+    transition: border-color 0.25s ease, background 0.9s ease, color 0.9s ease;
   }
   textarea::placeholder {
     color: var(--border);
     font-style: italic;
   }
   textarea:focus {
-    border-bottom-color: var(--accent);
+    border-color: var(--muted);
   }
 
   .char-count {
-    font-family: 'Caveat', cursive;
+    font-family: 'Lora', serif;
     text-align: right;
-    font-size: 0.95rem;
+    font-size: 0.72rem;
+    font-style: italic;
     color: var(--muted);
-    margin-top: 0.5rem;
+    margin-top: 0.45rem;
     margin-bottom: 2rem;
-    opacity: 0.4;
-    font-weight: 400;
+    opacity: 0.45;
     transition: color 0.9s ease;
   }
 
@@ -222,38 +191,38 @@
     background: var(--text);
     color: var(--bg);
     border: none;
-    border-radius: 24px;
-    padding: 0.82rem 2.8rem;
-    font-family: 'Source Serif 4', serif;
-    font-size: 0.95rem;
+    border-radius: 100px;
+    padding: 0.78rem 2.6rem;
+    font-family: 'Lora', serif;
+    font-size: 0.85rem;
     font-weight: 400;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.1em;
     cursor: pointer;
-    transition: background 0.4s ease, transform 0.12s ease;
+    transition: background 0.35s ease, transform 0.1s ease;
   }
   button.primary:hover:not(:disabled) {
     background: var(--accent);
     transform: translateY(-1px);
   }
   button.primary:active:not(:disabled) { transform: translateY(0); }
-  button.primary:disabled { opacity: 0.2; cursor: default; }
+  button.primary:disabled { opacity: 0.18; cursor: default; }
 
   button.ghost {
     display: block;
     background: none;
     border: none;
     color: var(--muted);
-    font-family: 'Source Serif 4', serif;
-    font-size: 0.95rem;
-    font-weight: 300;
+    font-family: 'Lora', serif;
+    font-size: 0.85rem;
+    font-weight: 400;
     font-style: italic;
     cursor: pointer;
     text-decoration: underline;
     text-decoration-color: var(--border);
     text-underline-offset: 4px;
     padding: 0;
-    margin-top: 1.6rem;
-    transition: color 0.3s, text-decoration-color 0.3s;
+    margin-top: 1.8rem;
+    transition: color 0.25s, text-decoration-color 0.25s;
   }
   button.ghost:hover {
     color: var(--accent);
@@ -262,15 +231,16 @@
 
   /* Loading */
   .loading-wrap {
-    padding: 4.5rem 0;
+    padding: 5rem 0;
     text-align: center;
   }
   .loading-text {
-    font-family: 'Caveat', cursive;
-    font-weight: 400;
-    font-size: 1.9rem;
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 1.5rem;
     color: var(--muted);
-    animation: breathe 2.8s ease-in-out infinite;
+    animation: breathe 2.6s ease-in-out infinite;
+    letter-spacing: 0.01em;
   }
   @keyframes breathe {
     0%, 100% { opacity: 0.2; }
@@ -283,29 +253,27 @@
   }
 
   .result-label {
-    font-family: 'Caveat', cursive;
-    font-size: 1.05rem;
+    font-family: 'Lora', serif;
+    font-size: 0.7rem;
     font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 1.4rem;
-    opacity: 0.7;
+    margin-bottom: 1.6rem;
     transition: color 0.9s ease;
   }
 
   .result-message {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: clamp(1.3rem, 3.8vw, 1.75rem);
-    line-height: 1.65;
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.25rem, 3.5vw, 1.6rem);
+    line-height: 1.7;
     color: var(--text);
     font-weight: 400;
-    padding-left: 1.3rem;
-    border-left: 2px solid var(--border);
-    margin-bottom: 1.8rem;
-    transition: color 0.9s ease, border-color 0.9s ease;
+    margin-bottom: 2rem;
+    transition: color 0.9s ease;
   }
   .result-message em {
-    font-style: normal;
+    font-style: italic;
     color: var(--accent-warm);
     transition: color 0.9s ease;
   }
@@ -313,23 +281,23 @@
   .divider { display: none; }
 
   .result-note {
-    font-family: 'Source Serif 4', serif;
-    font-size: 0.85rem;
-    font-weight: 300;
+    font-family: 'Lora', serif;
+    font-size: 0.82rem;
+    font-weight: 400;
     font-style: italic;
     color: var(--muted);
-    line-height: 1.7;
-    opacity: 0.7;
-    padding-left: 1.3rem;
+    line-height: 1.75;
+    opacity: 0.65;
     transition: color 0.9s ease;
   }
 
   /* Footer */
   footer {
-    margin-top: 3.5rem;
-    font-family: 'Caveat', cursive;
-    font-size: 0.95rem;
+    margin-top: 4rem;
+    font-family: 'Lora', serif;
+    font-size: 0.7rem;
     font-weight: 400;
+    letter-spacing: 0.06em;
     color: var(--muted);
     opacity: 0.35;
     transition: color 0.9s ease;
@@ -352,7 +320,7 @@
     <textarea id="worry-input" maxlength="280" placeholder="write it here…" rows="4" oninput="updateCount()"></textarea>
     <div class="char-count"><span id="char-count">0</span> / 280</div>
     <button class="primary" id="submit-btn" onclick="submitWorry()" disabled>share it</button>
-    <p id="submit-error" style="display:none; font-size:0.85rem; font-style:italic; color:var(--accent); margin-top:1rem; font-weight:300;"></p>
+    <p id="submit-error" style="display:none; font-size:0.85rem; font-style:italic; color:var(--accent); margin-top:1rem;"></p>
   </div>
 
   <!-- SCREEN 2: Loading -->
@@ -381,7 +349,6 @@
   const textarea = document.getElementById('worry-input');
   const submitBtn = document.getElementById('submit-btn');
 
-  // ── Dark mode: active between 9pm and 6am ──
   function applyTheme() {
     const hour = new Date().getHours();
     const isNight = hour >= 21 || hour < 6;
